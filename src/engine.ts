@@ -1,9 +1,12 @@
-import { tools } from './tools';
+import { tools as coreTools } from './tools';
+import { extendedTools } from './extendedTools';
 import type { SearchResult, ToolDefinition } from './types';
+
+export const allTools: ToolDefinition[] = [...coreTools, ...extendedTools];
 
 const norm = (value: string) => value.toLowerCase().trim().replace(/[^a-z0-9]+/g, ' ').replace(/\s+/g, ' ');
 
-export function validateRegistry(registry: ToolDefinition[] = tools) {
+export function validateRegistry(registry: ToolDefinition[] = allTools) {
   const ids = new Set<string>();
   const aliases = new Map<string, string>();
   const problems: string[] = [];
@@ -23,7 +26,7 @@ export function validateRegistry(registry: ToolDefinition[] = tools) {
 export function searchTools(query: string, category = 'All'): SearchResult[] {
   const q = norm(query);
   const tokens = q.split(' ').filter(Boolean);
-  return tools
+  return allTools
     .filter(tool => category === 'All' || tool.category === category)
     .map(tool => {
       const name = norm(tool.name);
@@ -51,6 +54,6 @@ export function searchTools(query: string, category = 'All'): SearchResult[] {
 }
 
 export function compatibleNextTools(current: ToolDefinition) {
-  if (current.outputKind === 'none') return [];
-  return tools.filter(tool => tool.id !== current.id && (tool.inputKind === current.outputKind || tool.inputKind === 'text')).slice(0, 5);
+  if (current.outputKind === 'none' || current.outputKind === 'file' || current.outputKind === 'image' || current.outputKind === 'pdf' || current.outputKind === 'audio' || current.outputKind === 'binary') return [];
+  return allTools.filter(tool => tool.id !== current.id && tool.inputMode !== 'file' && tool.inputMode !== 'files' && (tool.inputKind === current.outputKind || tool.inputKind === 'text')).slice(0, 5);
 }

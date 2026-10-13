@@ -1,0 +1,11 @@
+{
+  "name": "ToolForge OS",
+  "short_name": "ToolForge",
+  "description": "Local-first utility workspace with explicit privacy and execution contracts.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0b0d12",
+  "theme_color": "#0b0d12",
+  "categories": ["utilities", "productivity", "developer"],
+  "orientation": "any"
+}
